@@ -4,11 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Learning</title>
-  <meta name="description" content="Learning resources: ChatGPT, NotebookLM, FlowiseAI." />
+  <meta name="description" content="Learning resources: ChatGPT, NotebookLM, Emedding Model." />
   <link rel="stylesheet" href="/OLGA.github.io/assets/css/style.css" />
-   <style>
-    flowise-chatbot { display: none !important; }
-  </style>
 </head>
 
 <body>
@@ -117,46 +114,38 @@
 
     let initialized = false;
 
-    async function initFlowiseAndOpen() {
-      if (initialized) {
-        // If already initialized, show the launcher bubble so user can re-open if they closed it.
-        const el = document.querySelector("flowise-chatbot");
-        if (el) el.style.display = "";
-        return;
-      }
+    async function initFlowiseOnDemand() {
+      if (initialized) return;
 
-      // Lazy-load Flowise embed library
+      // Load Flowise embed only when user clicks
       const mod = await import("https://cdn.jsdelivr.net/npm/flowise-embed/dist/web.js");
       const Chatbot = mod.default ?? mod;
 
-      // Init with "autoWindowOpen" so the chat window pops immediately after init
       Chatbot.init({
         chatflowid: FLOWISE_CHATFLOW_ID,
         apiHost: FLOWISE_API_HOST,
         theme: {
           button: {
             autoWindowOpen: {
-              autoOpen: true,
+              autoOpen: true,   // open immediately after init
               openDelay: 0,
               autoOpenOnMobile: true
             }
-          }
+          },
+          // Flowise supports injecting CSS into the widget. Use !important to override defaults. :contentReference[oaicite:1]{index=1}
+          customCSS: `
+            /* Hide the floating launcher bubble/button */
+            div[part="button"] { display: none !important; }
+          `
         }
       });
 
       initialized = true;
-
-      // Keep bubble hidden after opening (optional).
-      // If you prefer the bubble to remain visible after open, delete these lines.
-      setTimeout(() => {
-        const el = document.querySelector("flowise-chatbot");
-        if (el) el.style.display = "none";
-      }, 200);
     }
 
-    document.getElementById("flowise-launch")?.addEventListener("click", (e) => {
+    document.getElementById("flowise-launch")?.addEventListener("click", async (e) => {
       e.preventDefault();
-      initFlowiseAndOpen();
+      await initFlowiseOnDemand();
     });
   </script>
 </body>
