@@ -83,7 +83,13 @@
         </article>
       </div>
     </section>
-    
+    <script type="module">
+    import Chatbot from "https://cdn.jsdelivr.net/npm/flowise-embed/dist/web.js"
+    Chatbot.init({
+        chatflowid: "17a9c1ac-2447-4b7b-82e9-2388f00b9481",
+        apiHost: "https://cloud.flowiseai.com",
+    })
+</script>
 
     <section class="section" id="flowise-notes">
       <h2>Notes: </h2>
@@ -108,45 +114,5 @@
 
   <script src="/OLGA.github.io/assets/js/main.js"></script>
 
-<script type="module">
-    const FLOWISE_CHATFLOW_ID = "17a9c1ac-2447-4b7b-82e9-2388f00b9481";
-    const FLOWISE_API_HOST = "https://cloud.flowiseai.com";
-
-    let initialized = false;
-
-    async function initFlowiseOnDemand() {
-      if (initialized) return;
-
-      // Load Flowise embed only when user clicks
-      const mod = await import("https://cdn.jsdelivr.net/npm/flowise-embed/dist/web.js");
-      const Chatbot = mod.default ?? mod;
-
-      Chatbot.init({
-        chatflowid: FLOWISE_CHATFLOW_ID,
-        apiHost: FLOWISE_API_HOST,
-        theme: {
-          button: {
-            autoWindowOpen: {
-              autoOpen: true,   // open immediately after init
-              openDelay: 0,
-              autoOpenOnMobile: true
-            }
-          },
-          // Flowise supports injecting CSS into the widget. Use !important to override defaults. :contentReference[oaicite:1]{index=1}
-          customCSS: `
-            /* Hide the floating launcher bubble/button */
-            div[part="button"] { display: none !important; }
-          `
-        }
-      });
-
-      initialized = true;
-    }
-
-    document.getElementById("flowise-launch")?.addEventListener("click", async (e) => {
-      e.preventDefault();
-      await initFlowiseOnDemand();
-    });
-  </script>
 </body>
 </html>
